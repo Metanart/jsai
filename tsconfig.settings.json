@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+
+        "strict": true,
+        "allowJs": false,
+
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+
+        "outDir": "dist",
+
+        "rootDir": ".",
+        "baseUrl": ".",
+        "paths": {
+            "@classes/*": ["_shared/classes/*"],
+            "@utils/*": ["_shared/utils/*"],
+            "@database": ["_server/database/database.ts"],
+            "@router": ["_server/router/router.ts"],
+        },
+    },      
+    "exclude": ["node_modules"],
+}
