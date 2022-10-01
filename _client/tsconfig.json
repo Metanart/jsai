@@ -1,8 +1,6 @@
 {
     "extends": "../tsconfig.settings.json",
     "compilerOptions": {
-		"target": "esnext",
-		"module": "esnext",
 		"strict": true,
 		"noImplicitAny": false,
 		"noEmit": true,
@@ -22,5 +20,5 @@
 			"Phaser"
 		]
     },
-    "include": ["index.ts"],
+	"include": ["src"],
 }

@@ -3,5 +3,14 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [tsconfigPaths({ projects: ['tsconfig.settings.json'] })],
+    plugins: [
+        tsconfigPaths({
+            projects: [
+                'tsconfig.settings.json',
+                '_client/tsconfig.json',
+                '_server/tsconfig.json',
+                '_shared/tsconfig.json',
+            ],
+        }),
+    ],
 });

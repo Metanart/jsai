@@ -4,5 +4,5 @@
         "module": "NodeNext",
         "allowSyntheticDefaultImports": true,
     },
-    "include": ["index.ts", "database", "router"]
+    "include": ["src"]
 }

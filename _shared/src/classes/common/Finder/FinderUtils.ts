@@ -1,0 +1,3 @@
+export const FINDER_DEFAULT_DEPTH = 10;
+
+export const FINDER_DEFAULT_COUNTER = 1000;

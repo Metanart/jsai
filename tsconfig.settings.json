@@ -14,14 +14,14 @@
 
         "outDir": "dist",
 
-        "rootDir": ".",
-        "baseUrl": ".",
+        "rootDir": "./",
+        "baseUrl": "./",
         "paths": {
-            "@classes/*": ["_shared/classes/*"],
-            "@utils/*": ["_shared/utils/*"],
-            "@database": ["_server/database/database.ts"],
-            "@router": ["_server/router/router.ts"],
+            "@client/*": ["_client/src/*"],
+            "@server/*": ["_server/src/*"],
+            "@shared/*": ["_shared/src/*"],
         },
-    },      
-    "exclude": ["node_modules"],
+    },
+    "include": ["src"],
+    "exclude": ["node_modules", "build"],
 }
