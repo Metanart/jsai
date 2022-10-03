@@ -2,17 +2,14 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class ValueEntity {
-    @PrimaryColumn('blob')
-    id!: string;
+    @Column({ type: 'integer' })
+    value!: number;
 
     @Column({ type: 'integer' })
-    currentValue!: number;
+    maxValue!: number;
 
     @Column({ type: 'integer' })
-    currentMaxValue!: number;
-
-    @Column({ type: 'integer' })
-    currentMinValue!: number;
+    minValue!: number;
 
     @Column({ type: 'integer' })
     baseValue!: number;

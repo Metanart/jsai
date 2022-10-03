@@ -1,19 +1,10 @@
-import { Events } from '@shared/classes/generic/Events/Events';
-import { ValueNumber } from '@shared/classes/generic/Value/Value';
+import { Structure } from '@shared/classes/generic/Structure/Structure';
 
 import { Property } from './Property';
+import { PropertyEntity } from './PropertyEntity';
 
-export type PropertyData = {
-    id: number;
-    type: PropertyType;
-    baseValue: number;
-    baseMaxValue: number;
-    baseMinValue: number;
-    currentValue: number;
-    currentMaxValue: number;
-    currentMinValue: number;
-};
+export type PropertyPreset = Pick<PropertyEntity, 'type' | 'value'>;
+
+export type PropertiesStructure = Structure<PropertyType, Property, PropertyEntity>;
 
 export type PropertyType = 'calories' | 'defence' | 'health' | 'energy' | 'fatigue' | 'weight';
-
-export type PropertyPreset = [PropertyType, ValueNumber];

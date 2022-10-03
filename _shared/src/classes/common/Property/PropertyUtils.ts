@@ -1,39 +1,47 @@
 import { Events } from '@shared/classes/generic/Events/Events';
 import { Structure } from '@shared/classes/generic/Structure/Structure';
-import { ValueNumber } from '@shared/classes/generic/Value/Value';
+import { v4 } from 'uuid';
 
 import { Property } from './Property';
 import { PropertyEntity } from './PropertyEntity';
-import { PropertyData, PropertyPreset, PropertyType } from './PropertyTypes';
+import { PropertiesStructure, PropertyPreset, PropertyType } from './PropertyTypes';
 
-export const createProperty = (type: PropertyType, value: ValueNumber, events: Events): Property =>
-    new Property(type, value, events);
+export const createPropertyFromPreset = (preset: PropertyPreset, events: Events, parentId: string) =>
+    new Property(v4(), parentId, preset.type, events, preset.value);
 
-export const createProperties = (presets: PropertyPreset[], events: Events): Property[] => {
-    return presets.map((preset: PropertyPreset) => {
-        const [type, value] = preset;
-        return createProperty(type, value, events);
-    });
-};
+export const createPropertiesFromPresets = (presets: PropertyPreset[], events: Events, parentId: string) =>
+    presets.map((preset) => createPropertyFromPreset(preset, events, parentId));
 
 export const createPropertyFromEntity = (entity: PropertyEntity, events: Events): Property => {
-    // @ts-ignore
-    return new Property().applyEntityData(entity).setEvents(events);
+    const { id, parentId, type, value, maxValue, minValue, baseValue, baseMaxValue, baseMinValue } = entity;
+    return new Property(id, parentId, type, events, value, maxValue, minValue, baseValue, baseMaxValue, baseMinValue);
 };
 
+export const createPropertiesFromEntities = (entities: PropertyEntity[], events: Events): Property[] =>
+    entities.map((entity) => createPropertyFromEntity(entity, events));
+
 export const createPropertiesStructure = (
-    presets: PropertyPreset[],
     events: Events,
-): Structure<PropertyType, Property> => {
+    entities: PropertyEntity[] = [],
+    presets: PropertyPreset[] = [],
+    parentId?: string,
+): PropertiesStructure => {
     let types: PropertyType[] = [];
     let items: Property[] = [];
 
-    items = presets.map((preset) => {
-        const [type, value] = preset;
-        types.push(type);
+    if (entities.length) {
+        items = entities.map((entity) => {
+            types.push(entity.type);
+            return createPropertyFromEntity(entity, events);
+        });
+    }
 
-        return createProperty(type, value, events);
-    });
+    if (presets.length && parentId) {
+        items = presets.map((preset) => {
+            types.push(preset.type);
+            return createPropertyFromPreset(preset, events, parentId);
+        });
+    }
 
-    return new Structure<PropertyType, Property>('Property', types, items, events);
+    return new Structure<PropertyType, Property, PropertyEntity>('Property', types, items, events);
 };

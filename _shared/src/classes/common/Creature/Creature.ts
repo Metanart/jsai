@@ -1,18 +1,15 @@
-import { Events } from '@shared/classes/generic/Events/Events';
-import { Structure } from '@shared/classes/generic/Structure/Structure';
+import { CollectedEntities } from '@shared/types';
 
-import { Property } from '../Property/Property';
-import { PropertyPreset, PropertyType } from '../Property/PropertyTypes';
-import { createPropertiesStructure } from '../Property/PropertyUtils';
-import { mapCreatureTypeToPreset } from './CreaturePresets';
+import { PropertiesStructure } from '../Property/PropertyTypes';
 import { CreatureType } from './CreatureTypes';
 
 export class Creature {
-    properties: Structure<PropertyType, Property>;
-    propertiesEvents: Events = new Events();
+    constructor(public id: string, public type: CreatureType, public properties: PropertiesStructure) {}
 
-    constructor(public type: CreatureType) {
-        const [propertiesPresets] = mapCreatureTypeToPreset[type];
-        this.properties = createPropertiesStructure(propertiesPresets, this.propertiesEvents);
+    getEntities(): CollectedEntities {
+        return [
+            { name: this.constructor.name, data: { id: this.id, type: this.type } },
+            ...this.properties.getEntities(),
+        ];
     }
 }

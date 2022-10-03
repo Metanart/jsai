@@ -1,23 +1,19 @@
+import { CollectedEntities } from '@shared/types';
 import { iterateFunction } from '@shared/utils/iterate-function';
 
 import { Events } from '../Events/Events';
 
-type StructureItemProperties = 'id' | 'type';
+type StructureItemProperties = 'id' | 'type' | 'getEntity';
 
 export type StructureItem = {
     [Key in StructureItemProperties]: any;
 };
 
-export class Structure<GenericItemType extends string, GenericItem extends StructureItem> {
-    slots: { [key: string]: GenericItem | 'empty' } = {};
-    referenceClassName: string | string[];
-
-    checkIfItemAllowed(item: GenericItem) {
-        return item.constructor.name === this.referenceClassName;
-    }
+export class Structure<GenericItemType extends string, GenericItem extends StructureItem, GenericItemEntity> {
+    private slots: { [key: string]: GenericItem | 'empty' } = {};
 
     constructor(
-        referenceClassName: string,
+        private referenceClassName: string,
         slotsTypes: GenericItemType[],
         slotsItems: GenericItem[],
         public events: Events,
@@ -27,6 +23,10 @@ export class Structure<GenericItemType extends string, GenericItem extends Struc
         slotsTypes.map((type) => this.addSlot(type));
 
         if (slotsItems) this.setItems(slotsItems);
+    }
+
+    private checkIfItemAllowed(item: GenericItem) {
+        return item.constructor.name === this.referenceClassName;
     }
 
     addSlot(type: GenericItemType) {
@@ -101,5 +101,15 @@ export class Structure<GenericItemType extends string, GenericItem extends Struc
 
     cleanSlots(types: GenericItemType[]): GenericItemType[] | undefined {
         return iterateFunction<GenericItemType>(types, this.cleanSlot.bind(this));
+    }
+
+    getEntities(): CollectedEntities {
+        return Object.keys(this.slots)
+            .map((key: string) => {
+                const currentItem = this.slots[key];
+
+                if (currentItem !== 'empty' && currentItem['getEntity']) return currentItem.getEntity();
+            })
+            .filter(Boolean);
     }
 }

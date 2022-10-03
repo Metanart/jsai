@@ -1,33 +1,41 @@
+import { CollectedEntity } from '@shared/types';
 import { calcPercentageNumberOfNumber } from '@shared/utils/calc-percentage-number-of-number';
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
-import { v4 } from 'uuid';
 
 import { ValueEntity } from './ValueEntity';
-
-export type ValueNumber = number | [number, number?, number?];
 
 const GLOBAL_MAX_VALUE = 10000;
 const GLOBAL_MIN_VALUE = 0;
 const GLOBAL_MAX_DEFAULT = 100;
 
 export abstract class Value {
-    id: string = v4();
     shortage: number = 0;
     valuePercentage: number = 0;
     shortagePercentage: number = 0;
 
-    private currentValue: number = 0;
-    private currentMaxValue: number = 0;
-    private currentMinValue: number = 0;
-    private baseValue: number = 0;
-    private baseMaxValue: number = 0;
-    private baseMinValue: number = 0;
+    private baseValue: number;
+    private baseMaxValue: number;
+    private baseMinValue: number;
 
-    constructor(value: ValueNumber = 0) {
-        if (typeof value === 'object') {
-            this.calculateValue(...value);
+    constructor(
+        private value: number,
+        private maxValue: number = value,
+        private minValue: number = 0,
+        baseValue?: number,
+        baseMaxValue?: number,
+        baseMinValue?: number,
+    ) {
+        this.minValue = this.getPreparedMinValue(value, maxValue, minValue);
+        this.maxValue = this.getPreparedMaxValue(value, maxValue, this.minValue);
+        this.value = this.getPreparedValue(value, this.maxValue, this.minValue);
+
+        if (baseValue && baseMaxValue && baseMinValue) {
+            this.baseMinValue = this.getPreparedMinValue(baseValue, baseMaxValue, baseMinValue);
+            this.baseMaxValue = this.getPreparedMaxValue(baseValue, baseMaxValue, this.baseMinValue);
+            this.baseValue = this.getPreparedValue(baseValue, this.baseMaxValue, this.baseMinValue);
         } else {
-            this.calculateValue(value);
+            this.baseMinValue = this.getPreparedMinValue(this.value, this.maxValue, this.minValue);
+            this.baseMaxValue = this.getPreparedMaxValue(this.value, this.maxValue, this.baseMinValue);
+            this.baseValue = this.getPreparedValue(this.value, this.baseMaxValue, this.baseMinValue);
         }
     }
 
@@ -37,11 +45,7 @@ export abstract class Value {
     }
 
     change(value: number) {
-        this.currentValue = this.getPreparedValue(
-            this.currentValue + value,
-            this.currentMaxValue,
-            this.currentMinValue,
-        );
+        this.value = this.getPreparedValue(this.value + value, this.maxValue, this.minValue);
         this.recalculate();
     }
 
@@ -50,48 +54,32 @@ export abstract class Value {
         this.recalculatePercentage();
     }
 
-    applyEntityData(entity: ValueEntity) {
-        Object.assign(this, entity);
-        this.recalculate();
-        return this;
-    }
-
-    getEntityData() {
+    getEntity(): CollectedEntity {
         return {
-            id: this.id,
-            currentValue: this.currentValue,
-            currentMaxValue: this.currentMaxValue,
-            currentMinValue: this.currentMinValue,
-            baseValue: this.baseValue,
-            baseMaxValue: this.baseMaxValue,
-            baseMinValue: this.baseMinValue,
-        } as ValueEntity;
-    }
-
-    private calculateValue(value: number, maxValue?: number, minValue?: number) {
-        const initValue = value;
-        const initMaxValue = maxValue || value;
-        const initMinValue = minValue || 0;
-
-        this.baseMinValue = this.getPreparedMinValue(initValue, initMaxValue, initMinValue);
-        this.baseMaxValue = this.getPreparedMaxValue(initValue, initMaxValue, this.baseMinValue);
-        this.baseValue = this.getPreparedValue(initValue, this.baseMaxValue, this.baseMinValue);
-
-        this.reset();
+            name: this.constructor.name,
+            data: {
+                value: this.value,
+                maxValue: this.maxValue,
+                minValue: this.minValue,
+                baseValue: this.baseValue,
+                baseMaxValue: this.baseMaxValue,
+                baseMinValue: this.baseMinValue,
+            } as ValueEntity,
+        };
     }
 
     private resetCurrentValue() {
-        this.currentValue = this.baseValue.valueOf();
-        this.currentMinValue = this.baseMinValue.valueOf();
-        this.currentMaxValue = this.baseMaxValue.valueOf();
+        this.value = this.baseValue.valueOf();
+        this.minValue = this.baseMinValue.valueOf();
+        this.maxValue = this.baseMaxValue.valueOf();
     }
 
     private recalculateShortage() {
-        this.shortage = this.currentMaxValue - this.currentValue;
+        this.shortage = this.maxValue - this.value;
     }
 
     private recalculatePercentage() {
-        this.valuePercentage = calcPercentageNumberOfNumber(this.currentValue, this.currentMaxValue);
+        this.valuePercentage = calcPercentageNumberOfNumber(this.value, this.maxValue);
         this.shortagePercentage = 100 - this.valuePercentage;
     }
 

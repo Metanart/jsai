@@ -1,15 +1,25 @@
 import { Events } from '@shared/classes/generic/Events/Events';
-import { Value, ValueNumber } from '@shared/classes/generic/Value/Value';
-import { Column, Entity } from 'typeorm';
+import { Value } from '@shared/classes/generic/Value/Value';
+import { CollectedEntity } from '@shared/types';
 
-import { PropertyEntity } from './PropertyEntity';
 import { PropertyType } from './PropertyTypes';
 
 export class Property extends Value {
     private criticalPercentage: number = 10;
 
-    constructor(public type: PropertyType, value: number | ValueNumber = 0, private events: Events) {
-        super(value);
+    constructor(
+        public id: string,
+        public parentId: string,
+        public type: PropertyType,
+        private events: Events,
+        value: number,
+        maxValue?: number,
+        minValue?: number,
+        baseValue?: number,
+        baseMaxValue?: number,
+        baseMinValue?: number,
+    ) {
+        super(value, maxValue, minValue, baseValue, baseMaxValue, baseMinValue);
     }
 
     setEvents(events: Events) {
@@ -24,10 +34,15 @@ export class Property extends Value {
             this.events.trigger(this.constructor.name, 'onCriticalChange', { property: this });
     }
 
-    override getEntityData(): PropertyEntity {
+    override getEntity(): CollectedEntity {
         return {
-            ...super.getEntityData(),
-            type: this.type,
+            name: this.constructor.name,
+            data: {
+                id: this.id,
+                parentId: this.parentId,
+                type: this.type,
+                ...super.getEntity().data,
+            },
         };
     }
 }

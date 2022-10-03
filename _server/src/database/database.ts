@@ -1,3 +1,4 @@
+import { CreatureEntity } from '@shared/classes/common/Creature/CreatureEntity';
 import { PropertyEntity } from '@shared/classes/common/Property/PropertyEntity';
 import { DataSource } from 'typeorm';
 import { EntityTarget, ObjectLiteral } from 'typeorm';
@@ -6,7 +7,7 @@ const dataSource: DataSource = new DataSource({
     type: 'sqlite',
     synchronize: true,
     database: '_server/database.db',
-    entities: [PropertyEntity],
+    entities: [PropertyEntity, CreatureEntity],
 });
 
 dataSource

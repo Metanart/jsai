@@ -1,10 +1,10 @@
-import { EntityName } from '@shared/types';
+import { ClassName, RouteName } from '@shared/types';
 import { routerConfig } from '@shared/utils/router-config';
 
 type MethodName = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
-async function serverRequest(methodName: MethodName, entityName: EntityName, data: any = {}) {
-    const requestUrl = `${routerConfig.url}/${entityName}${data.id ? `/${data.id}` : ''}`;
+async function serverRequest(methodName: MethodName, routeName: RouteName, data: any = {}) {
+    const requestUrl = `${routerConfig.url}/${routeName}${data.id ? `/${data.id}` : ''}`;
 
     console.log(requestUrl);
 
@@ -26,10 +26,24 @@ async function serverRequest(methodName: MethodName, entityName: EntityName, dat
     return new Error('The server request is not fulfilled');
 }
 
+const getAll = (routeName: RouteName, data: any = {}) => serverRequest('GET', routeName, data);
+
+const getOne = (routeName: RouteName, data: any = {}) => serverRequest('GET', routeName, data);
+
+const create = (routeName: RouteName, data: any = {}) => serverRequest('POST', routeName, data);
+
+const update = (routeName: RouteName, data: any = {}) => serverRequest('PUT', routeName, data);
+
+const deleteOne = (routeName: RouteName, data: any = {}) => serverRequest('DELETE', routeName, data);
+
+const createStack = (entities: { name: ClassName; data: any }[]) => {
+    entities.map((entity) => {});
+};
+
 export const sendRequest = {
-    getAll: (entityName: EntityName, data: any = {}) => serverRequest('GET', entityName, data),
-    getOne: (entityName: EntityName, data: any = {}) => serverRequest('GET', entityName, data),
-    create: (entityName: EntityName, data: any = {}) => serverRequest('POST', entityName, data),
-    update: (entityName: EntityName, data: any = {}) => serverRequest('PUT', entityName, data),
-    deleteOne: (entityName: EntityName, data: any = {}) => serverRequest('DELETE', entityName, data),
+    getAll,
+    getOne,
+    create,
+    update,
+    deleteOne,
 };
