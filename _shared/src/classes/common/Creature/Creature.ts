@@ -1,15 +1,22 @@
-import { CollectedEntities } from '@shared/types';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 import { PropertiesStructure } from '../Property/PropertyTypes';
 import { CreatureType } from './CreatureTypes';
 
+@Entity()
 export class Creature {
-    constructor(public id: string, public type: CreatureType, public properties: PropertiesStructure) {}
+    @PrimaryColumn({ type: 'blob' })
+    id: string;
 
-    getEntities(): CollectedEntities {
-        return [
-            { name: this.constructor.name, data: { id: this.id, type: this.type } },
-            ...this.properties.getEntities(),
-        ];
+    @Column({ type: 'text' })
+    type: CreatureType;
+
+    constructor(id: string, type: CreatureType, public properties: PropertiesStructure) {
+        this.id = id;
+        this.type = type;
+    }
+
+    getEntities() {
+        return [this, ...this.properties.getEntities()];
     }
 }

@@ -1,7 +1,10 @@
-import { createCreatureFromPreset } from '@shared/classes/common/Creature/CreatureUtils';
-
-import { prepareEntitiesForServer } from './utils/prepare-entities-for-server';
+import { restApi } from '@classes/RestAPI/RestAPI';
+import { createCreatureFromPreset } from '@shared/common/Creature/CreatureUtils';
 
 const creature = createCreatureFromPreset('human');
 
-console.log(prepareEntitiesForServer(creature.getEntities()));
+const creatureEntites = creature.getEntities();
+
+restApi.setEntities([creature]).send('POST');
+
+console.log(restApi.results.Creature?.then((data) => console.log(data)));

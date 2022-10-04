@@ -1,18 +1,28 @@
-import { Events } from '@shared/classes/generic/Events/Events';
-import { Value } from '@shared/classes/generic/Value/Value';
-import { CollectedEntity } from '@shared/types';
+import { Events } from '@generic/Events/Events';
+import { Value } from '@generic/Value/Value';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 import { PropertyType } from './PropertyTypes';
 
+@Entity()
 export class Property extends Value {
-    private criticalPercentage: number = 10;
+    @PrimaryColumn('blob')
+    id: string;
+
+    @Column({ type: 'text' })
+    type: PropertyType;
+
+    @Column('blob')
+    parentId: string;
+
+    criticalPercentage: number = 10;
 
     constructor(
-        public id: string,
-        public parentId: string,
-        public type: PropertyType,
-        private events: Events,
+        id: string,
+        type: PropertyType,
         value: number,
+        parentId: string,
+        public events?: Events,
         maxValue?: number,
         minValue?: number,
         baseValue?: number,
@@ -20,6 +30,10 @@ export class Property extends Value {
         baseMinValue?: number,
     ) {
         super(value, maxValue, minValue, baseValue, baseMaxValue, baseMinValue);
+
+        this.id = id;
+        this.parentId = parentId;
+        this.type = type;
     }
 
     setEvents(events: Events) {
@@ -30,19 +44,7 @@ export class Property extends Value {
     override change(value: number): void {
         super.change(value);
 
-        if (this.valuePercentage <= this.criticalPercentage)
+        if (this.events && this.valuePercentage <= this.criticalPercentage)
             this.events.trigger(this.constructor.name, 'onCriticalChange', { property: this });
-    }
-
-    override getEntity(): CollectedEntity {
-        return {
-            name: this.constructor.name,
-            data: {
-                id: this.id,
-                parentId: this.parentId,
-                type: this.type,
-                ...super.getEntity().data,
-            },
-        };
     }
 }

@@ -1,4 +1,12 @@
 {
     "extends": "../tsconfig.settings.json",
+    "compilerOptions": {
+        "paths": {
+            "@common/*":["_shared/src/classes/common/*"],
+            "@generic/*":["_shared/src/classes/generic/*"],
+            "@router/*":["_shared/src/router/*"],
+            "@utils/*":["_shared/src/utils/*"],
+        }
+    },
     "include": ["src"]
 }

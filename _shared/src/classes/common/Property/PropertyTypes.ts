@@ -1,10 +1,9 @@
-import { Structure } from '@shared/classes/generic/Structure/Structure';
+import { Structure } from '@generic/Structure/Structure';
 
 import { Property } from './Property';
-import { PropertyEntity } from './PropertyEntity';
 
-export type PropertyPreset = Pick<PropertyEntity, 'type' | 'value'>;
+export type PropertyPreset = Pick<Property, 'type' | 'value'>;
 
-export type PropertiesStructure = Structure<PropertyType, Property, PropertyEntity>;
+export type PropertiesStructure = Structure<PropertyType, Property>;
 
 export type PropertyType = 'calories' | 'defence' | 'health' | 'energy' | 'fatigue' | 'weight';

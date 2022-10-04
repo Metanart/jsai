@@ -1,3 +1,3 @@
-import { router } from '@server/router/router';
+import { appRouter } from '@router';
 
-router.start();
+appRouter.start();

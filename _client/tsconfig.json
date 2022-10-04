@@ -18,7 +18,17 @@
 		],
 		"types": [
 			"Phaser"
-		]
+		],
+		"paths": {
+            "@shared/common/*": ["_shared/src/classes/common/*"],
+            "@shared/generic/*": ["_shared/src/classes/generic/*"],
+            "@shared/router/*": ["_shared/src/router/*"],
+            "@shared/utils/*": ["_shared/src/utils/*"],
+
+            "@classes/*":["_client/src/classes/*"],
+            "@utils/*":["_client/src/utils/*"],
+            "@types":["_client/src/types.ts"],
+		}
     },
 	"include": ["src"],
 }

@@ -1,15 +1,13 @@
-import { CollectedEntities } from '@shared/types';
-import { iterateFunction } from '@shared/utils/iterate-function';
+import { Events } from '@generic/Events/Events';
+import { iterateFunction } from '@utils/iterate-function';
 
-import { Events } from '../Events/Events';
-
-type StructureItemProperties = 'id' | 'type' | 'getEntity';
+type StructureItemProperties = 'id' | 'type';
 
 export type StructureItem = {
     [Key in StructureItemProperties]: any;
 };
 
-export class Structure<GenericItemType extends string, GenericItem extends StructureItem, GenericItemEntity> {
+export class Structure<GenericItemType extends string, GenericItem extends StructureItem> {
     private slots: { [key: string]: GenericItem | 'empty' } = {};
 
     constructor(
@@ -103,12 +101,12 @@ export class Structure<GenericItemType extends string, GenericItem extends Struc
         return iterateFunction<GenericItemType>(types, this.cleanSlot.bind(this));
     }
 
-    getEntities(): CollectedEntities {
+    getEntities() {
         return Object.keys(this.slots)
             .map((key: string) => {
                 const currentItem = this.slots[key];
 
-                if (currentItem !== 'empty' && currentItem['getEntity']) return currentItem.getEntity();
+                if (currentItem !== 'empty') return currentItem;
             })
             .filter(Boolean);
     }

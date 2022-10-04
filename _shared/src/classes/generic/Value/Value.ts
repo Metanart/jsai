@@ -1,25 +1,38 @@
-import { CollectedEntity } from '@shared/types';
-import { calcPercentageNumberOfNumber } from '@shared/utils/calc-percentage-number-of-number';
-
-import { ValueEntity } from './ValueEntity';
+import { calcPercentageNumberOfNumber } from '@utils/calc-percentage-number-of-number';
+import { Column, Entity } from 'typeorm';
 
 const GLOBAL_MAX_VALUE = 10000;
 const GLOBAL_MIN_VALUE = 0;
 const GLOBAL_MAX_DEFAULT = 100;
 
+@Entity()
 export abstract class Value {
+    @Column({ type: 'integer' })
+    value: number;
+
+    @Column({ type: 'integer' })
+    maxValue: number;
+
+    @Column({ type: 'integer' })
+    minValue: number;
+
+    @Column({ type: 'integer' })
+    baseValue: number;
+
+    @Column({ type: 'integer' })
+    baseMaxValue: number;
+
+    @Column({ type: 'integer' })
+    baseMinValue: number;
+
     shortage: number = 0;
     valuePercentage: number = 0;
     shortagePercentage: number = 0;
 
-    private baseValue: number;
-    private baseMaxValue: number;
-    private baseMinValue: number;
-
     constructor(
-        private value: number,
-        private maxValue: number = value,
-        private minValue: number = 0,
+        value: number,
+        maxValue: number = value,
+        minValue: number = 0,
         baseValue?: number,
         baseMaxValue?: number,
         baseMinValue?: number,
@@ -52,20 +65,6 @@ export abstract class Value {
     recalculate() {
         this.recalculateShortage();
         this.recalculatePercentage();
-    }
-
-    getEntity(): CollectedEntity {
-        return {
-            name: this.constructor.name,
-            data: {
-                value: this.value,
-                maxValue: this.maxValue,
-                minValue: this.minValue,
-                baseValue: this.baseValue,
-                baseMaxValue: this.baseMaxValue,
-                baseMinValue: this.baseMinValue,
-            } as ValueEntity,
-        };
     }
 
     private resetCurrentValue() {
