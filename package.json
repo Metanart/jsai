@@ -6,7 +6,7 @@
     "scripts": {
         "serve:client": "vite preview --config vite.config.ts",
         "build:client": "tsc && vite build --config vite.config.ts",
-        "dev:server": "nodemon -e ts,js --exec ts-node --project _server/tsconfig.json --transpile-only -r tsconfig-paths/register _server/src/index.ts",
+        "dev:server": "nodemon --watch _server/src -e ts,js --exec ts-node --project _server/tsconfig.json --transpile-only -r tsconfig-paths/register  _server/src/index.ts",
         "dev:client": "vite --config vite.config.ts",
         "lint:fix:client": "eslint ./_client --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
         "lint:fix:server": "eslint ./_server --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
@@ -14,6 +14,17 @@
         "lint:format": "prettier  --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
         "lint": "yarn lint:format && yarn lint:fix:server && yarn lint:fix:shared && yarn lint:fix:client",
         "type-check": "tsc"
+    },
+    "dependencies": {
+        "body-parser": "^1.20.0",
+        "cors": "^2.8.5",
+        "express": "^4.18.1",
+        "phaser": "^3.55.2",
+        "reflect-metadata": "^0.1.13",
+        "sqlite3": "^5.1.1",
+        "typeorm": "^0.3.10",
+        "typescript": "^4.8.4",
+        "uuid": "^9.0.0"
     },
     "devDependencies": {
         "@types/cors": "^2.8.12",
@@ -36,16 +47,5 @@
         "tsconfig-paths": "^4.1.0",
         "vite": "^3.1.3",
         "vite-tsconfig-paths": "^3.5.1"
-    },
-    "dependencies": {
-        "body-parser": "^1.20.0",
-        "cors": "^2.8.5",
-        "express": "^4.18.1",
-        "phaser": "^3.55.2",
-        "reflect-metadata": "^0.1.13",
-        "sqlite3": "^5.1.1",
-        "typeorm": "^0.3.10",
-        "typescript": "^4.8.3",
-        "uuid": "^9.0.0"
     }
 }

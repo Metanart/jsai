@@ -1,1 +1,1 @@
-export type RouteName = 'Property' | 'Creature';
+export type RouteName = 'creatures';

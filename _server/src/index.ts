@@ -1,3 +1,5 @@
-import { appRouter } from '@router';
+import 'reflect-metadata';
 
-appRouter.start();
+import { createRouter } from '@router';
+
+createRouter();

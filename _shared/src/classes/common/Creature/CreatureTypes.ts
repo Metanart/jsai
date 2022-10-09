@@ -1,4 +1,4 @@
-import { PropertyPreset } from '../Property/PropertyTypes';
+import { PropertyPreset } from '@generics/Property/PropertyTypes';
 
 export type CreatureType = 'human';
 

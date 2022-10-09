@@ -9,6 +9,7 @@
         "strict": true,
         "allowJs": false,
 
+        "esModuleInterop": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
 
@@ -16,6 +17,20 @@
 
         "rootDir": "./",
         "baseUrl": "./",
+        "paths": {
+            "@shared/*": ["_shared/src/*"],
+            "@server/*": ["_server/src/*"],
+            "@client/*": ["_client/src/*"],
+
+            "@restApi": ["_client/src/classes/RestApi/RestApi.ts"],
+            
+            "@commons/*": ["_shared/src/classes/common/*"],
+            "@generics/*": ["_shared/src/classes/generic/*"],
+
+            "@router": ["_server/src/Router/Router.ts"],
+            "@database": ["_server/src/Database/Database.ts"],
+            "@controllers/*": ["_server/src/Database/controllers/*"],
+        }
     },
     "include": ["src"],
     "exclude": ["node_modules", "build"],

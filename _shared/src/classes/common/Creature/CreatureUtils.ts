@@ -1,16 +1,26 @@
-import { createPropertiesStructure } from '@common/Property/PropertyUtils';
-import { Events } from '@generic/Events/Events';
-import { v4 } from 'uuid';
+import { Events } from '@generics/Events/Events';
+import {
+    createPropertiesFromEntities,
+    createPropertiesStructureFromEntities,
+    createPropertiesStructureFromPresets,
+} from '@shared/classes/generic/Property/PropertyUtils';
 
 import { Creature } from './Creature';
+import { CreatureEntity } from './CreatureEntities';
 import { mapCreatureTypeToPreset } from './CreaturePresets';
 import { CreatureType } from './CreatureTypes';
 
 export const createCreatureFromPreset = (type: CreatureType): Creature => {
-    const creatureId = v4();
-
     const { propertiesPresets } = mapCreatureTypeToPreset[type];
-    const properties = createPropertiesStructure([], propertiesPresets, new Events(), creatureId);
+    const propertiesStructure = createPropertiesStructureFromPresets(propertiesPresets, new Events());
+    return new Creature('', type, propertiesStructure);
+};
 
-    return new Creature(creatureId, type, properties);
+export const createCreatureFromEntity = (creatureEntity: CreatureEntity): Creature => {
+    const { id, type, properties } = creatureEntity;
+    const propertiesStructure = createPropertiesStructureFromEntities(
+        createPropertiesFromEntities(properties),
+        new Events(),
+    );
+    return new Creature(id, type, propertiesStructure);
 };

@@ -3,20 +3,6 @@
     "compilerOptions": {
         "module": "NodeNext",
         "allowSyntheticDefaultImports": true,
-		"paths": {
-            "@shared/common/*": ["_shared/src/classes/common/*"],
-            "@shared/generic/*": ["_shared/src/classes/generic/*"],
-            "@shared/router/*": ["_shared/src/router/*"],
-            "@shared/utils/*": ["_shared/src/utils/*"],
-
-            "@common/*":["_shared/src/classes/common/*"],
-            "@generic/*":["_shared/src/classes/generic/*"],
-            "@router/*":["_shared/src/router/*"],
-            "@utils/*":["_shared/src/utils/*"],
-            
-            "@database":["_server/src/classes/AppDatabase/AppDatabase.ts"],
-            "@router":["_server/src/classes/AppRouter/AppRouter.ts"],
-		}
     },
-    "include": ["src"]
+    "include": ["src", "../_shared/src/classes/generic/Value/ValueEntities.ts", "../_shared/src/classes/common/Creature/CreatureEntities.ts"]
 }

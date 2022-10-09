@@ -1,27 +1,17 @@
-import { Events } from '@generic/Events/Events';
-import { Value } from '@generic/Value/Value';
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Events } from '@generics/Events/Events';
+import { Value } from '@generics/Value/Value';
+import { getPreparedEntity } from '@shared/utils/get-prepared-entity';
 
+import { PropertyEntity } from './PropertyEntities';
 import { PropertyType } from './PropertyTypes';
 
-@Entity()
 export class Property extends Value {
-    @PrimaryColumn('blob')
-    id: string;
-
-    @Column({ type: 'text' })
-    type: PropertyType;
-
-    @Column('blob')
-    parentId: string;
-
     criticalPercentage: number = 10;
 
     constructor(
-        id: string,
-        type: PropertyType,
-        value: number,
-        parentId: string,
+        public id: string,
+        public type: PropertyType,
+        public value: number,
         public events?: Events,
         maxValue?: number,
         minValue?: number,
@@ -30,10 +20,6 @@ export class Property extends Value {
         baseMinValue?: number,
     ) {
         super(value, maxValue, minValue, baseValue, baseMaxValue, baseMinValue);
-
-        this.id = id;
-        this.parentId = parentId;
-        this.type = type;
     }
 
     setEvents(events: Events) {
@@ -41,10 +27,22 @@ export class Property extends Value {
         return this;
     }
 
-    override change(value: number): void {
+    change(value: number): void {
         super.change(value);
 
         if (this.events && this.valuePercentage <= this.criticalPercentage)
             this.events.trigger(this.constructor.name, 'onCriticalChange', { property: this });
+    }
+
+    toEntity() {
+        return getPreparedEntity(this.id, {
+            type: this.type,
+            value: this.value,
+            maxValue: this.maxValue,
+            minValue: this.minValue,
+            baseValue: this.baseValue,
+            baseMaxValue: this.baseMaxValue,
+            baseMinValue: this.baseMinValue,
+        }) as PropertyEntity;
     }
 }

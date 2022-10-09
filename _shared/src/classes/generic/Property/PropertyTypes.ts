@@ -1,4 +1,4 @@
-import { Structure } from '@generic/Structure/Structure';
+import { Structure } from '@generics/Structure/Structure';
 
 import { Property } from './Property';
 

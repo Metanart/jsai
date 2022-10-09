@@ -1,28 +1,17 @@
-import { calcPercentageNumberOfNumber } from '@utils/calc-percentage-number-of-number';
-import { Column, Entity } from 'typeorm';
+import { calcPercentageNumberOfNumber } from '@shared/utils/calc-percentage-number-of-number';
+
+import { ValueEntity } from './ValueEntities';
 
 const GLOBAL_MAX_VALUE = 10000;
 const GLOBAL_MIN_VALUE = 0;
 const GLOBAL_MAX_DEFAULT = 100;
 
-@Entity()
 export abstract class Value {
-    @Column({ type: 'integer' })
     value: number;
-
-    @Column({ type: 'integer' })
     maxValue: number;
-
-    @Column({ type: 'integer' })
     minValue: number;
-
-    @Column({ type: 'integer' })
     baseValue: number;
-
-    @Column({ type: 'integer' })
     baseMaxValue: number;
-
-    @Column({ type: 'integer' })
     baseMinValue: number;
 
     shortage: number = 0;
@@ -104,5 +93,16 @@ export abstract class Value {
         if (minValue > value) return GLOBAL_MIN_VALUE;
         if (minValue > maxValue) return GLOBAL_MIN_VALUE;
         return minValue;
+    }
+
+    toEntity() {
+        return {
+            value: this.value,
+            maxValue: this.maxValue,
+            minValue: this.minValue,
+            baseValue: this.baseValue,
+            baseMaxValue: this.baseMaxValue,
+            baseMinValue: this.baseMinValue,
+        } as ValueEntity;
     }
 }

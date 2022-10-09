@@ -1,22 +1,21 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Events } from '@generics/Events/Events';
+import { Property } from '@generics/Property/Property';
+import { Structure } from '@generics/Structure/Structure';
+import { PropertyType } from '@shared/classes/generic/Property/PropertyTypes';
+import { getPreparedEntity } from '@shared/utils/get-prepared-entity';
 
-import { PropertiesStructure } from '../Property/PropertyTypes';
+import { CreatureEntity, CreaturePropertyEntity } from './CreatureEntities';
 import { CreatureType } from './CreatureTypes';
 
-@Entity()
 export class Creature {
-    @PrimaryColumn({ type: 'blob' })
-    id: string;
+    events = new Events();
 
-    @Column({ type: 'text' })
-    type: CreatureType;
+    constructor(public id: string, public type: CreatureType, public properties: Structure<PropertyType, Property>) {}
 
-    constructor(id: string, type: CreatureType, public properties: PropertiesStructure) {
-        this.id = id;
-        this.type = type;
-    }
-
-    getEntities() {
-        return [this, ...this.properties.getEntities()];
+    toEntity(): CreatureEntity {
+        return getPreparedEntity(this.id, {
+            type: this.type,
+            properties: this.properties.getEntities(),
+        }) as CreatureEntity;
     }
 }

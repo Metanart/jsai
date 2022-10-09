@@ -1,7 +1,8 @@
-import { Events } from '@generic/Events/Events';
-import { iterateFunction } from '@utils/iterate-function';
+import { Events } from '@generics/Events/Events';
+import { extractEntities } from '@shared/utils/extract-entities';
+import { iterateFunction } from '@shared/utils/iterate-function';
 
-type StructureItemProperties = 'id' | 'type';
+type StructureItemProperties = 'id' | 'type' | 'toEntity';
 
 export type StructureItem = {
     [Key in StructureItemProperties]: any;
@@ -21,6 +22,8 @@ export class Structure<GenericItemType extends string, GenericItem extends Struc
         slotsTypes.map((type) => this.addSlot(type));
 
         if (slotsItems) this.setItems(slotsItems);
+
+        return this;
     }
 
     private checkIfItemAllowed(item: GenericItem) {
@@ -102,12 +105,6 @@ export class Structure<GenericItemType extends string, GenericItem extends Struc
     }
 
     getEntities() {
-        return Object.keys(this.slots)
-            .map((key: string) => {
-                const currentItem = this.slots[key];
-
-                if (currentItem !== 'empty') return currentItem;
-            })
-            .filter(Boolean);
+        return extractEntities(Object.values(this.slots));
     }
 }

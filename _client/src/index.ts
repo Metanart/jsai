@@ -1,10 +1,15 @@
-import { restApi } from '@classes/RestAPI/RestAPI';
-import { createCreatureFromPreset } from '@shared/common/Creature/CreatureUtils';
+import { createCreatureFromPreset } from '@commons/Creature/CreatureUtils';
+import { RestAPI } from '@restApi';
+import { extractEntities } from '@shared/utils/extract-entities';
 
-const creature = createCreatureFromPreset('human');
+(async function () {
+    const restApi = new RestAPI('creatures');
 
-const creatureEntites = creature.getEntities();
+    const creatures = [createCreatureFromPreset('human').toEntity(), createCreatureFromPreset('human').toEntity()];
 
-restApi.setEntities([creature]).send('POST');
+    const created = await restApi.POST(creatures);
 
-console.log(restApi.results.Creature?.then((data) => console.log(data)));
+    const removed = await restApi.DELETE(created);
+
+    console.log(removed);
+})();

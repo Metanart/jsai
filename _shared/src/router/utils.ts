@@ -8,7 +8,7 @@ export const buildRequestUrl = (routeName: RouteName, ids?: string[]) => {
     return url;
 };
 
-export const buildRouteUrl = (routeName: RouteName, hasId?: boolean) => {
+export const buildRouterUrl = (routeName: RouteName, hasId?: boolean) => {
     let url = `/${routeName}`;
     if (hasId) url = `${url}/:id`;
     return url;
